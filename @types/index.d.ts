@@ -5,3 +5,4 @@ declare type NestRequest = import('express').Request & {
   user?: User;
   token?: string;
 };
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };

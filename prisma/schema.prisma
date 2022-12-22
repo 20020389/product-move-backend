@@ -6,24 +6,39 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String  @id @default(uuid())
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
   email    String  @unique
   password String
   name     String?
   type     String
-  tokens   Token[]
 }
 
-model Token {
-  id       Int      @id @default(autoincrement())
-  data     String   @db.Text
-  User     User?    @relation(fields: [userId], references: [id])
-  createAt DateTime @default(now())
-  expireAt DateTime @default(dbgenerated("(NOW() + interval 7 day)"))
-  userId   String?
+model Car {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  price    Int
+  location String
+  year     String
+  type     String // hãng xe 
+  status   String // cũ | mới
+  images   File[]
+}
+
+model File {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  size     Int
+  type     String
+  filepath String
+  keywords String?
+  token    String   @default(uuid())
+  createAt DateTime
+  updateAt DateTime
+  Car      Car?     @relation(fields: [carId], references: [id])
+  carId    String?  @db.ObjectId
 }
